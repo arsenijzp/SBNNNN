@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBN | U.S. SPECIAL OPERATIONS UNIT — TACTICAL TERMINAL v7.5</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Inter:wght@100;300;400;600;700;900&family=JetBrains+Mono:wght@100;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================================
+           SBN CORE DESIGN SYSTEM v7.5 (USA SPEC OPERATIONS)
+           ============================================================
+        */
+        :root {
+            --bg-deep: #050505;
+            --bg-panel: #0d0d0d;
+            --bg-widget: #111111;
+            --primary: #ff3c3c;
+            --primary-glow: rgba(255, 60, 60, 0.45);
+            --border: #2a2a2a;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --accent: #00ffcc;
+            --success: #2a9d8f;
+            --warning: #f4a261;
+            
+            --bg-grid-line: rgba(255, 255, 255, 0.02);
+            --bg-grid-size: 100px;
+            
+            --font-tactic: 'Chakra Petch', sans-serif;
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --ease-fast: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        
+        body { 
+            background-color: var(--bg-deep); 
+            color: var(--text-main); 
+            font-family: var(--font-main); 
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        body::before {
+            content: " ";
+            position: fixed; inset: 0;
+            background-image: linear-gradient(var(--bg-grid-line) 1px, transparent 1px), 
+                              linear-gradient(90deg, var(--bg-grid-line) 1px, transparent 1px);
+            background-size: var(--bg-grid-size) var(--bg-grid-size);
+            z-index: -1; pointer-events: none;
+            opacity: 0.15;
+        }
+
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 9999; pointer-events: none; background-size: 100% 3px, 3px 100%;
+        }
+
+        .blink { animation: blink-anim 1.5s infinite; }
+        @keyframes blink-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .glow { filter: drop-shadow(0 0 5px var(--primary-glow)); }
+        
+        @keyframes slide-in-top { 0% { transform: translateY(-30px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+        .anim-slide-top { animation: slide-in-top 0.6s var(--ease-fast) forwards; }
+        .anim-fade { animation: fade-in 1s var(--ease-in-out) forwards; }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); transition: 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: #fff; }
+
+        .btn {
+            background: transparent; border: 1px solid var(--border);
+            color: #fff; font-family: var(--font-tactic); font-weight: 700;
+            padding: 12px 24px; font-size: 11px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s var(--ease-fast); letter-spacing: 1px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            position: relative; overflow: hidden;
+        }
+        .btn:hover { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); color: var(--primary); }
+        
+        .btn-red { background: var(--primary); color: #fff; border: none; }
+        .btn-red:hover { background: white; color: black; transform: translateY(-2px); box-shadow: none; border: none; }
+
+        .btn-outline-red { border-color: var(--primary); color: var(--primary); background: rgba(230, 57, 70, 0.05); }
+        .btn-outline-red:hover { background: var(--primary); color: white; }
+
+        .tag-red-line { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: 2.5px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-family: var(--font-tactic); text-transform: uppercase; }
+        .tag-red-line::before { content: ''; width: 2px; height: 12px; background: var(--primary); display: block; }
+
+        header {
+            height: 75px; width: 100%; position: fixed; top: 0; z-index: 1000;
+            background: rgba(5,5,5,0.92); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; backdrop-filter: blur(15px);
+        }
+        
+        .logo-area { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; }
+        .logo-area:hover { filter: drop-shadow(0 0 10px var(--primary-glow)); }
+        
+        .logo-icon-sbn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .logo-icon-sbn svg { width: 100%; height: 100%; fill: var(--primary); }
+        
+        .logo-text-sbn { font-size: 21px; font-weight: 700; line-height: 1; font-family: var(--font-tactic); text-transform: uppercase; color: var(--text-main); letter-spacing: 1.5px; }
+        .logo-text-sbn span { display: block; font-size: 9px; color: var(--text-dim); font-family: 'Inter'; font-weight: 500; letter-spacing: 1px; margin-top: 2px; text-transform: uppercase; }
+
+        nav ul { display: flex; gap: 28px; list-style: none; }
+        nav a { font-size: 11px; font-weight: 600; text-decoration: none; color: var(--text-main); letter-spacing: 1.2px; transition: 0.3s var(--ease-in-out); cursor: pointer; font-family: var(--font-tactic); text-transform: uppercase; position: relative; padding: 5px 0; }
+        nav a:hover { color: var(--primary); }
+        .nav-active { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 3px; }
+        .header-actions { display: flex; gap: 12px; }
+
+        .hero {
+            height: 100vh; position: relative; width: 100%;
+            background: linear-gradient(90deg, #050505 40%, rgba(0,0,0,0.1) 100%), url('https://images.unsplash.com/photo-1595590424283-b8f1784cb2c8?q=80&w=2070') center/cover;
+            display: flex; align-items: center; padding: 0 10%; z-index: 2;
+        }
+        .hero-info { max-width: 800px; z-index: 5; margin-top: 50px; }
+        .hero h1 { font-size: clamp(35px, 8.5vw, 85px); line-height: 0.9; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; font-family: var(--font-tactic); }
+        .hollow { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.7); }
+        .hero-desc { font-size: 12px; color: var(--text-dim); max-width: 500px; line-height: 1.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px; }
+        .hero-bot-left { position: absolute; bottom: 30px; left: 5%; display: flex; gap: 25px; font-size: 10px; color: var(--text-dim); font-weight: 600; letter-spacing: 1.5px; }
+        .hero-bot-left span::before { content: '✓'; color: var(--text-main); margin-right: 7px; font-weight: 900; }
+        .hero-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        .sys-status-hero { position: absolute; top: 120px; right: 5%; border: 1px solid var(--border); padding: 12px 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); font-size: 10px; text-transform: uppercase; }
+        
+        .hero-marker { position: absolute; width: 4px; height: 4px; background: var(--primary); animation: pulse-red 2s infinite; border-radius: 50%; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 1px var(--primary-glow); } 50% { box-shadow: 0 0 15px var(--primary-glow); } 100% { box-shadow: 0 0 1px var(--primary-glow); } }
+
+        .stats { background: var(--text-main); color: #000; padding: 60px 5%; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 5; border-bottom: 3px solid var(--primary); }
+        .stat-grid { display: flex; gap: 60px; border-right: 1px solid #ddd; padding-right: 60px; flex-wrap: wrap; }
+        .stat-item h2 { font-size: 48px; font-weight: 900; line-height: 1; margin-top: 10px; font-family: var(--font-tactic); }
+        .stat-item p { font-size: 10px; font-weight: 700; color: #555; margin-top: 5px; text-transform: uppercase; }
+        
+        .mission-strip-box { max-width: 400px; padding-left: 20px; }
+        .mission-strip-box h3 { font-size: 19px; font-weight: 700; margin: 10px 0; font-family: var(--font-tactic); text-transform: uppercase; line-height: 1.3; }
+        .mission-strip-box p { font-size: 12px; color: #444; line-height: 1.6; font-family: var(--font-main); }
+        .sbn-black-logo-box { background: #000; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); border: 2px solid transparent; flex-shrink: 0;}
+        .sbn-black-logo-box:hover { border-color: white; transform: rotate(45deg) scale(1.05); transition: 0.3s; }
+        .sbn-black-logo-box svg { width: 60px; fill: white; transform: rotate(-45deg); }
+
+        .info-section { padding: 100px 5%; background: var(--bg-deep); border-bottom: 1px solid var(--border); }
+        .info-section.alt-bg { background: var(--bg-panel); }
+        .info-title { font-family: var(--font-tactic); font-size: 38px; margin-bottom: 30px; text-transform: uppercase; }
+        .info-text { color: var(--text-dim); line-height: 1.8; max-width: 800px; font-size: 15px; margin-bottom: 40px; }
+        
+        .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .benefit-card { background: var(--bg-widget); border: 1px solid var(--border); padding: 40px 30px; text-align: left; transition: 0.3s; }
+        .benefit-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .benefit-card h3 { color: var(--primary); font-family: var(--font-tactic); font-size: 20px; margin-bottom: 15px; text-transform: uppercase; }
+        .benefit-card p { color: var(--text-dim); font-size: 13px; line-height: 1.6; }
+
+        .news { padding: 100px 5%; background: var(--bg-deep); border-bottom: 1px solid var(--border); position: relative; }
+        .news-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;}
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .news-card { background: var(--bg-panel); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: 0.4s var(--ease-fast); display: flex; flex-direction: column;}
+        .news-card:hover { border-color: var(--primary); transform: translateY(-7px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .news-card img { width: 100%; height: 210px; object-fit: cover; filter: grayscale(1); border-bottom: 2px solid var(--primary); transition: 0.4s; }
+        .news-card:hover img { filter: grayscale(0); transform: scale(1.05); }
+        .news-body { padding: 30px; flex-grow: 1;}
+        .news-date { font-family: var(--font-mono); font-size: 10px; color: var(--primary); margin-bottom: 12px; display: block; }
+        .news-body h3 { font-size: 19px; font-weight: 700; margin-bottom: 15px; font-family: var(--font-tactic); text-transform: uppercase; color: var(--text-main); }
+        .news-body p { font-size: 13px; color: var(--text-dim); line-height: 1.6; max-height: 65px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+        .cta { background: linear-gradient(90deg, #050505 40%, rgba(0,0,0,0.2) 100%), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074') center/cover; padding: 100px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: relative; }
+        .cta-coords { font-size: 10px; color: var(--text-dim); font-weight: 600; font-family: var(--font-mono); line-height: 1.8; text-transform: uppercase; }
+        .cta-coords span { color: var(--primary); font-weight: 700; }
+        .cta-mid { text-align: center; }
+        .cta-mid h2 { font-size: 38px; margin-bottom: 10px; font-weight: 800; font-family: var(--font-tactic); text-transform: uppercase; }
+        .cta-mid p { font-size: 11px; letter-spacing: 2.5px; color: var(--text-dim); margin-bottom: 40px; text-transform: uppercase; }
+        .cta-quote { border-left: 2px solid var(--primary); padding-left: 20px; max-width: 320px; }
+        .cta-quote p { font-size: 14px; font-style: italic; color: #fff; margin-bottom: 10px; line-height: 1.6; }
+        .cta-quote span { font-size: 10px; color: var(--text-dim); font-weight: bold; text-transform: uppercase; }
+
+        .modal-overlay-sbn { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(10px); animation: fade-in 0.3s; padding: 20px;}
+        .modal-content-sbn { background: var(--bg-widget); border: 1px solid var(--border); padding: 50px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto;}
+        .modal-content-sbn.large { max-width: 900px; background: var(--bg-panel); border-color: var(--primary); box-shadow: 0 0 50px rgba(204, 0, 0, 0.2); }
+        .modal-content-sbn:hover:not(.large) { border-color: var(--primary); }
+        
+        .modal-title-sbn { font-family: var(--font-tactic); font-size: 28px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; text-align: center; font-weight: 700; color: white; }
+        .title-accent { color: var(--primary); }
+        
+        .input-group-sbn { margin-bottom: 20px; text-align: left; }
+        .input-group-sbn label { font-size: 10px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; display: block; text-transform: uppercase; font-family: var(--font-tactic); letter-spacing: 1px; }
+        .input-group-sbn input, .input-group-sbn select, .input-group-sbn textarea { width: 100%; padding: 15px; background: #0b0b0b; border: 1px solid var(--border); color: #fff; outline: none; transition: 0.3s; font-family: 'Inter'; font-size: 13px; }
+        .input-group-sbn input:focus, .input-group-sbn textarea:focus { border-color: var(--text-main); }
+        .input-group-sbn textarea { resize: vertical; min-height: 100px; }
+        
+        .modal-close-sbn { position: absolute; top: 20px; right: 20px; font-size: 24px; color: var(--text-dim); cursor: pointer; transition: 0.3s; font-family: 'Chakra Petch'; z-index: 10; }
+        .modal-close-sbn:hover { color: var(--primary); transform: rotate(90deg); }
+
+        .news-meta-cab { display: flex; gap: 30px; font-family: var(--font-mono); font-size: 11px; color: var(--primary); margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 15px; flex-wrap: wrap;}
+        .news-meta-cab span strong { color: #fff; font-weight: 700; }
+        .news-article-sbn { color: var(--text-dim); font-size: 16px; line-height: 1.8; margin-bottom: 30px; }
+        .news-article-sbn h4 { font-family: var(--font-tactic); color: #fff; margin: 30px 0 15px; font-size: 20px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; padding-bottom: 5px; }
+        .news-article-sbn p { margin-bottom: 15px; }
+        .sbn-quote-log { font-family: var(--font-mono); font-size: 12px; background: #070707; padding: 20px; border-left: 2px solid var(--primary); color: #888; margin-bottom: 25px; }
+
+        .alert-message { font-family: var(--font-mono); font-size: 14px; text-align: center; margin-bottom: 30px; color: var(--text-main); line-height: 1.6; }
+        .alert-btn-group { display: flex; gap: 10px; justify-content: center; }
+
+        /* --- CABINET DISPLAY --- */
+        #cabinet { display: none; padding: 120px 5% 50px; background: #080808; min-height: 100vh; animation: fade-in 0.5s; z-index: 10; position: relative; }
+        .cab-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding-bottom: 25px; margin-bottom: 50px; flex-wrap: wrap; gap: 20px; }
+        .cab-name { font-size: clamp(24px, 5vw, 38px); color: var(--text-main); font-family: var(--font-tactic); text-transform: uppercase; font-weight: 700; line-height: 1; margin-bottom: 10px; }
+        .cab-rank { font-size: 13px; color: var(--primary); letter-spacing: 2.5px; font-weight: 700; text-transform: uppercase; font-family: var(--font-tactic); }
+        .sys-time-cab { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: 1.5px; }
+        
+        .cab-grid { display: grid; grid-template-columns: 1fr 1fr 350px; gap: 30px; align-items: start;}
+        .cab-box { background: var(--bg-widget); border: 1px solid var(--border); padding: 30px; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .cab-box h3 { margin-bottom: 25px; font-size: 19px; color: var(--text-dim); border-bottom: 1px solid var(--border); padding-bottom: 15px; font-family: var(--font-tactic); text-transform: uppercase; font-weight: 700; }
+        
+        #personnel-section { grid-column: 1 / 3; }
+        .data-table-sbn { width: 100%; overflow-x: auto; }
+        .table-cab { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        .table-cab th { font-family: var(--font-tactic); text-transform: uppercase; font-size: 10px; color: var(--text-dim); padding: 15px 10px; border-bottom: 1px solid var(--border); letter-spacing: 1px; }
+        .table-cab td { padding: 15px 10px; font-size: 13px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .table-cab tr:hover td { background: rgba(255, 255, 255, 0.015); }
+        .spec-badge { background: #1a1a1a; color: var(--text-main); padding: 4px 8px; font-size: 9px; text-transform: uppercase; font-family: var(--font-mono); border: 1px solid #2a2a2a; }
+        
+        .action-btns { display: flex; gap: 5px; flex-wrap: wrap;}
+        .term-btn { background: rgba(230, 57, 70, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 6px 10px; font-size: 9px; cursor: pointer; transition: 0.2s; font-family: var(--font-mono); font-weight: 700; text-transform: uppercase; }
+        .term-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 0 10px rgba(230, 57, 70, 0.4); }
+        .edit-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-dim); color: var(--text-main); padding: 6px 10px; font-size: 9px; cursor: pointer; transition: 0.2s; font-family: var(--font-mono); font-weight: 700; text-transform: uppercase; }
+        .edit-btn:hover { background: #fff; color: #000; }
+
+        #ops-map-container { width: 100%; max-width: 100%; display: block; overflow: hidden; }
+        #ops-map { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); box-sizing: border-box; }
+        .map-sector { background: #070707; cursor: crosshair; transition: 0.15s; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(6px, 1.5vw, 10px); color: #2a2a2a; position: relative; }
+        .map-sector:hover { background: rgba(230, 57, 70, 0.1); color: white; }
+        .map-sector.active-unit::after { content: ''; position: absolute; inset: 20%; background: var(--primary); border-radius: 50%; animation: pulse-red 2s infinite; }
+        
+        #squads-list, #cab-contracts-list, #hq-messages-list { display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; }
+        .squad-card, .cab-contract-item, .msg-card { background: #111; padding: 15px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .squad-card:hover, .msg-card:hover { border-color: var(--primary); }
+        .squad-info h4 { font-family: var(--font-tactic); font-size: 14px; color: #fff; margin-bottom: 5px; text-transform: uppercase; }
+        .squad-info p { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-family: var(--font-mono); }
+        .disband-btn { padding: 5px 10px; background: transparent; border: 1px solid #333; color: gray; font-size: 9px; cursor: pointer; font-family: var(--font-mono); text-transform: uppercase; transition: 0.3s; }
+        .disband-btn:hover { background: white; color: black; border: 1px solid white; }
+
+        /* CHAT SYSTEM STYLES */
+        #messenger-section { grid-column: 1 / -1; margin-top: 10px; }
+        .chat-container { display: flex; gap: 20px; height: 400px; border-top: 1px solid var(--border); padding-top: 20px; margin-top: -10px; }
+        .chat-sidebar { width: 250px; border-right: 1px solid var(--border); padding-right: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;}
+        .chat-main { flex: 1; display: flex; flex-direction: column; }
+        .chat-channel-item { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: #0a0a0a; transition: 0.2s; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--text-dim); }
+        .chat-channel-item:hover { border-color: var(--primary); color: #fff; }
+        .chat-channel-item.active { border-color: var(--accent); color: var(--accent); background: rgba(0, 255, 204, 0.05); }
+        .chat-messages-area { flex: 1; background: #050505; border: 1px solid var(--border); margin-bottom: 15px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { font-family: var(--font-mono); font-size: 12px; color: #ccc; line-height: 1.5; padding: 10px; background: #111; border-left: 2px solid #333; }
+        .chat-msg.self { border-left-color: var(--accent); background: rgba(0, 255, 204, 0.05); }
+        .chat-msg span.sender { color: var(--text-main); font-weight: bold; margin-right: 10px; }
+        .chat-msg span.time { color: var(--text-dim); font-size: 9px; float: right; }
+
+        #logs-section { grid-column: 1 / -1; margin-top: 20px; }
+        .terminal-box-cab { background: #000; height: 180px; border: 1px solid var(--border); padding: 20px; font-family: var(--font-mono); font-size: 11px; color: var(--success); overflow-y: auto; list-style: none; }
+        .terminal-box-cab li { margin-bottom: 7px; border-bottom: 1px solid #111; padding-bottom: 3px; }
+
+        footer { padding: 50px 5% 40px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; position: relative; z-index: 5; background: var(--bg-deep); flex-wrap: wrap; gap: 20px;}
+        .footer-logo { display: flex; align-items: center; gap: 10px; }
+        .footer-logo svg { width: 30px; fill: white; opacity: 0.6; }
+        .socials { display: flex; gap: 20px; }
+        .socials a { color: var(--text-dim); text-decoration: none; transition: 0.3s; }
+        .socials a:hover { color: var(--text-main); }
+
+        @media (max-width: 1200px) {
+            .cab-grid { grid-template-columns: 1fr 1fr; }
+            #contracts-section { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+            #budget-section, #messenger-section { grid-column: 1 / -1; }
+        }
+        @media (max-width: 850px) {
+            header { flex-direction: column; padding: 15px; height: auto; gap: 15px; }
+            nav ul { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .hero-info { margin-top: 120px; }
+            .hero-bot-left { display: none; }
+            .stat-grid { flex-direction: column; border-right: none; padding-right: 0; gap: 30px; }
+            .stats { flex-direction: column; align-items: flex-start; gap: 40px; }
+            .cta { flex-direction: column; text-align: center; gap: 30px; }
+            .cta-quote { border-left: none; border-top: 2px solid var(--primary); padding: 20px 0 0 0; }
+            .cab-grid { grid-template-columns: 1fr; }
+            #personnel-section, #map-section { grid-column: 1; }
+            #contracts-section { grid-column: 1; grid-template-columns: 1fr; gap: 30px; }
+            .modal-content-sbn { padding: 30px 20px; }
+            .chat-container { flex-direction: column; height: auto; }
+            .chat-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 20px; max-height: 200px; }
+            .chat-messages-area { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="logo-area" onclick="navPage('home')">
+            <div class="logo-icon-sbn">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <div class="logo-text-sbn">
+                <h2>UNITTERMINAL</h2>
+                <span>U.S. SPECIAL OPERATIONS</span>
+            </div>
+        </div>
+        <nav>
+            <ul id="main-nav">
+                <li><a href="#" class="nav-active" data-section="home" onclick="navPage('home')">ABOUT</a></li>
+                <li><a href="#" onclick="document.querySelector('.info-section').scrollIntoView();">WHAT IS SBN</a></li>
+                <li><a href="#" onclick="document.querySelector('.news').scrollIntoView();">OPERATIONS</a></li>
+                <li><a href="#" onclick="openModal('msgModal')">CONTACT HQ</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="btn btn-outline" onclick="openModal('loginModal')">PERSONAL ACCOUNT</button>
+            <button class="btn btn-red" onclick="openModal('applyModal')">APPLY CONTRACT</button>
+        </div>
+    </header>
+
+    <main id="home-view">
+        <section id="home" class="hero">
+            <div class="sys-status-hero"><span style="color:var(--text-dim)">SYSTEM //</span> <span class="blink" style="color:var(--accent)">● ACTIVE</span></div>
+            <div class="hero-marker" style="top:30%; left:85%;"></div>
+            <div class="hero-marker" style="top:60%; left:75%; animation-delay:0.5s;"></div>
+
+            <div class="hero-info">
+                <div class="tag-red-line">U.S. SPECIAL OPERATIONS COMMAND</div>
+                <h1 class="anim-slide-top">PROTECTING FREEDOM.<br><span class="hollow">NOT RECRUITING.</span></h1>
+                <p class="hero-desc">We protect the people. We destroy tyranny. We answer only to the flag of freedom.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-red" onclick="document.querySelector('.news').scrollIntoView()">READ REPORTS &rarr;</button>
+                </div>
+            </div>
+            
+            <div class="hero-bot-left">
+                <span>PEOPLE'S SECURITY MANDATE</span>
+                <span>MISSION AUTHORIZED</span>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="tag-red-line" style="font-size:8px;">ACTIVE OPERATIVES</div>
+                    <h2>2,847</h2>
+                    <p>UNIT MEMBERS</p>
+                </div>
+                <div class="stat-item">
+                    <div class="tag-red-line" style="font-size:8px;">MISSIONS COMPLETED</div>
+                    <h2>163</h2>
+                    <p>SUCCESSFUL OPS</p>
+                </div>
+                <div class="stat-item">
+                    <div class="tag-red-line" style="font-size:8px;">COMMAND AUTHORITY</div>
+                    <h2 style="font-size: 24px; margin-top: 23px;">U.S. GOV</h2>
+                    <p>PEOPLE Mandate</p>
+                </div>
+            </div>
+            
+            <div class="mission-strip-box">
+                <div class="tag-red-line">— OUR DOCTRINE</div>
+                <h3>ENSURING THE SAFETY, FREEDOM, AND RIGHTS OF THE PEOPLE.</h3>
+                <p>SBN is an elite special operations unit. Our mission: eliminating tyranny and protecting citizens.</p>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="tag-red-line">— CLASSIFIED INTEL</div>
+            <h2 class="info-title">WHAT IS <span style="color:var(--primary)">SBN</span>?</h2>
+            <p class="info-text">The People's Security Service (SBN) is an elite paramilitary unit created to protect civil liberties. We do not answer to corrupt officials and act in the interests of the people. Our goal: eliminating threats, protecting human rights, clearing illegal checkpoints, and conducting precision tactical operations of any complexity. We step in when the law stops working.</p>
+        </section>
+
+        <section class="info-section alt-bg">
+            <div class="tag-red-line">— RECRUITMENT</div>
+            <h2 class="info-title">CONTRACT <span style="color:var(--primary)">CONDITIONS</span></h2>
+            <p class="info-text" style="margin-bottom: 50px;">SBN values its operatives. We provide the best conditions for those willing to risk their lives for the freedom of others.</p>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h3>STABLE COMPENSATION</h3>
+                    <p>Salaries are paid strictly on time, without delays. Substantial bonuses are provided for successful raids, assaults, and high-value target eliminations.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>ELITE EQUIPMENT</h3>
+                    <p>Full access to advanced tactical weaponry, heavy armor, and specialized transport that is unavailable to regular army units.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>FULL IMMUNITY</h3>
+                    <p>SBN operatives act outside standard jurisdiction. Command provides full legal and physical protection for every soldier deployed in the field.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="news" class="news">
+            <div class="news-header">
+                <div>
+                    <div class="tag-red-line">— OPERATIONAL INTELLIGENCE</div>
+                    <h2 style="font-family:var(--font-tactic); font-size: clamp(28px, 5vw, 48px); text-transform:uppercase;">MISSIONS & OPERATIONS</h2>
+                </div>
+            </div>
+            <div class="news-grid" id="main-news-feed"></div>
+        </section>
+
+        <section class="cta">
+            <div class="cta-coords"><span>📍</span> WASHINGTON D.C.<br>38.9072° N, 77.0369° W</div>
+            <div class="cta-mid">
+                <h2>JOIN THE CAUSE</h2>
+                <p>FREEDOM IS NOT GIVEN — IT'S DEFENDED</p>
+                <div class="hero-actions" style="justify-content: center;">
+                    <button class="btn btn-red" onclick="openModal('applyModal')">APPLY FOR CONTRACT</button>
+                </div>
+            </div>
+            <div class="cta-quote">
+                <p>"We don't take orders from tyrants. We take action for the people."</p>
+                <span>— SBN COMMAND</span>
+            </div>
+        </section>
+    </main>
+
+    <main id="cabinet">
+        <header style="position: absolute; top: 0; left: 0; background: transparent; border: none; z-index: 20;">
+            <div class="logo-area">
+                <div class="logo-icon-sbn"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
+                <div class="logo-text-sbn"><h2>COMMANDERTERMINAL</h2><span style="color: #888;">USA Mandate Secure</span></div>
+            </div>
+            <div class="header-actions" style="align-items: center;">
+                <span id="currentTime" class="sys-time-cab">12:00:00</span>
+                <button class="btn btn-outline" style="border-color: #333;" onclick="location.reload()">LOGOUT</button>
+            </div>
+        </header>
+
+        <div class="cab-header">
+            <div>
+                <h1 class="cab-name" id="cabOpName">NAME</h1>
+                <p class="cab-rank" id="cabOpRank">RANK | ID: <span class="id-cell" id="cabOpId" style="color:inherit;">0</span></p>
+            </div>
+        </div>
+
+        <div class="cab-grid">
+            <div id="personnel-section" class="cab-box">
+                <h3>PERSONNEL MANAGEMENT</h3>
+                <div class="data-table-sbn">
+                    <table class="table-cab">
+                        <thead>
+                            <tr>
+                                <th>OPERATIVE</th>
+                                <th>RANK</th>
+                                <th>SPECIALIZATION</th>
+                                <th>COMMAND ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personnelTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="map-section" class="cab-box">
+                <h3>SBN DEPLOYMENT GRID</h3>
+                <div id="ops-map-container">
+                    <div id="ops-map"></div>
+                </div>
+            </div>
+
+            <div id="contracts-section">
+                <div class="cab-box" id="box-contracts">
+                    <h3>APPLICANT CONTRACTS</h3>
+                    <div id="cab-contracts-list"></div>
+                </div>
+                <div class="cab-box">
+                    <h3>ACTIVE SQUADS</h3>
+                    <div id="squads-list"></div>
+                </div>
+                <div class="cab-box" id="box-messages" style="display:none; border-color: var(--warning);">
+                    <h3 style="color: var(--warning); border-color: var(--warning);">HQ SECURE COMMS</h3>
+                    <div id="hq-messages-list"></div>
+                </div>
+            </div>
+
+            <div id="messenger-section" class="cab-box">
+                <h3 style="color: var(--accent); border-color: var(--accent);">SECURE MESSENGER // P2P NETWORK</h3>
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <button class="btn btn-outline" style="width: 100%; min-height: 40px; margin-bottom: 10px; border-color: var(--accent); color: var(--accent);" onclick="promptCreateChat()">+ NEW CHANNEL</button>
+                        <div id="chat-channels-list"></div>
+                    </div>
+                    <div class="chat-main">
+                        <div id="chat-messages-area" class="chat-messages-area">
+                            </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="chatInput" placeholder="Enter encrypted message..." style="flex: 1; padding: 12px; background: #0b0b0b; border: 1px solid var(--border); color: #fff; font-family: 'Inter'; outline: none;">
+                            <button class="btn btn-red" onclick="sendChatMessage()">SEND</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="budget-section" class="cab-box" style="display:none; grid-column: 1 / 3;">
+                <h3 style="color: var(--success); border-color: var(--success);">FINANCIAL COMMAND // BUDGET ALLOCATION</h3>
+                <div style="font-family:var(--font-mono); color:var(--success); font-size: 22px; margin-bottom: 25px; letter-spacing: 2px; font-weight: 700;">
+                    OPERATIONAL BUDGET: <span id="budgetDisplay">$0</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                    <div class="input-group-sbn">
+                        <label>DEPOSIT FUNDS TO OPERATIONAL BUDGET</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="number" id="addFundsInput" placeholder="Amount ($)" style="width: 60%;">
+                            <button class="btn btn-outline" style="width: 40%; border-color: var(--success); color: var(--success); padding: 0;" onclick="addFunds()">DEPOSIT</button>
+                        </div>
+                    </div>
+                    <div class="input-group-sbn">
+                        <label>ISSUE SALARY TO OPERATIVE</label>
+                        <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                            <select id="salaryOpSelect" style="flex: 1;"></select>
+                            <input type="number" id="salaryAmountInput" placeholder="Amount ($)" style="width: 100px;">
+                        </div>
+                        <button class="btn btn-red" style="width: 100%;" onclick="issueSalary()">TRANSFER FUNDS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="logs-section" class="cab-box">
+                <h3>SYSTEM LOGS</h3>
+                <ul class="terminal-box-cab" id="terminalCabLogs"></ul>
+            </div>
+        </div>
+    </main>
+
+    <div id="customAlertModal" class="modal-overlay-sbn" style="z-index: 9999;">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 400px; border-color: var(--primary);">
+            <h2 class="modal-title-sbn">SYSTEM MESSAGE</h2>
+            <div class="alert-message" id="alertMessageText"></div>
+            <div class="alert-btn-group">
+                <button class="btn btn-red" style="width: 100%;" onclick="closeCustomAlert()">ACKNOWLEDGE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customConfirmModal" class="modal-overlay-sbn" style="z-index: 9999;">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 400px; border-color: var(--warning);">
+            <h2 class="modal-title-sbn" style="color: var(--warning);">AWAITING CONFIRMATION</h2>
+            <div class="alert-message" id="confirmMessageText"></div>
+            <div class="alert-btn-group">
+                <button class="btn btn-outline" style="width: 50%;" onclick="closeCustomConfirm(false)">ABORT</button>
+                <button class="btn btn-red" style="width: 50%;" onclick="closeCustomConfirm(true)">PROCEED</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="createChatModal" class="modal-overlay-sbn" style="z-index: 9999;">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 400px; border-color: var(--accent);">
+            <h2 class="modal-title-sbn" style="color: var(--accent);">CREATE <span style="color: #fff;">CHANNEL</span></h2>
+            <div class="input-group-sbn">
+                <label>CHANNEL NAME / IDENTIFIER</label>
+                <input type="text" id="newChatNameInput" placeholder="e.g. ALPHA_SQUAD_COMMS">
+            </div>
+            <button class="btn btn-outline" style="width: 100%; border-color: var(--accent); color: var(--accent);" onclick="submitCreateChat()">INITIALIZE CHANNEL</button>
+        </div>
+    </div>
+
+    <div id="contractReviewModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 500px;">
+            <span class="modal-close-sbn" onclick="closeModal('contractReviewModal')">&times;</span>
+            <h2 class="modal-title-sbn">DOSSIER <span class="title-accent">REVIEW</span></h2>
+            <div class="sbn-quote-log" style="font-size: 14px; line-height: 2;">
+                <strong>APPLICANT IDENTIFIER:</strong> <span id="reviewAppCallsign"></span><br>
+                <strong>REQUESTED SPECIALIZATION:</strong> <span id="reviewAppSpec"></span><br>
+                <strong>CONTACT ROUTE:</strong> <span id="reviewAppContact"></span>
+            </div>
+            <div class="alert-message" style="font-size: 11px; color: var(--text-dim); text-align: left; text-transform: uppercase;">
+                Reviewing this dossier verifies the operative's clearance. Acceptance will automatically generate secure credentials.
+            </div>
+            <div class="alert-btn-group">
+                <button class="btn btn-outline" style="width: 50%; border-color: #555; color: #aaa;" onclick="rejectContract()">REJECT</button>
+                <button class="btn btn-red" style="width: 50%;" onclick="acceptContract()">APPROVE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="credentialsModal" class="modal-overlay-sbn" style="z-index: 9999;">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 450px; border-color: var(--success); box-shadow: 0 0 30px rgba(42, 157, 143, 0.2);">
+            <h2 class="modal-title-sbn" style="color: var(--success);">OPERATIVE APPROVED</h2>
+            <div class="alert-message" style="text-align: left;">
+                <p style="margin-bottom: 20px; color: var(--text-dim); text-transform: uppercase; font-size: 11px;">Commander, securely transfer these credentials to the new operative. They will require these to access the Tactical Terminal.</p>
+                <div style="background: #000; padding: 25px; border: 1px dashed var(--success); font-family: var(--font-mono); font-size: 18px; color: #fff; text-align: center; letter-spacing: 2px;">
+                    <div style="margin-bottom: 10px; color: var(--text-dim); font-size: 11px;">ASSIGNED ID</div>
+                    <span id="genOpId" style="color:var(--success); font-weight: 700; font-size: 24px;">0000</span>
+                    <hr style="border: none; border-bottom: 1px solid #222; margin: 15px 0;">
+                    <div style="margin-bottom: 10px; color: var(--text-dim); font-size: 11px;">PRIVATE PASSPHRASE</div>
+                    <span id="genOpPass" style="color:var(--success); font-weight: 700;">000000</span>
+                </div>
+            </div>
+            <div class="alert-btn-group" style="margin-top: 30px;">
+                <button class="btn btn-outline" style="width: 100%; border-color: var(--success); color: var(--success);" onclick="closeModal('credentialsModal')">ACKNOWLEDGE & CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="newsDetailModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn large anim-slide-top">
+            <span class="modal-close-sbn" onclick="closeModal('newsDetailModal')">&times;</span>
+            <div class="news-meta-cab">
+                <span>CODE // <strong>#<span id="modal-news-tag"></span></strong></span>
+                <span>STATUS // <strong>ARCHIVED</strong></span>
+                <span>STAMP // <strong><span id="modal-news-timestamp"></span></strong></span>
+            </div>
+            <h1 class="modal-title-sbn" id="modal-news-title" style="text-align: left;">TITLE</h1>
+            <div class="news-article-sbn" id="modal-news-body"></div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top" style="max-width: 400px; text-align: center;">
+            <span class="modal-close-sbn" onclick="closeModal('loginModal')">&times;</span>
+            <h2 class="modal-title-sbn">SBN AUTH</h2>
+            <div class="input-group-sbn">
+                <label>OPERATIVE_ID</label>
+                <input type="text" id="loginId" placeholder="ID">
+            </div>
+            <div class="input-group-sbn">
+                <label>PRIVATE_KEY_HASH</label>
+                <input type="password" id="loginPass" placeholder="PASSWORD">
+            </div>
+            <button class="btn btn-red" style="width: 100%; height: 50px;" onclick="attemptLogin()">AUTHORIZE</button>
+        </div>
+    </div>
+
+    <div id="applyModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top">
+            <span class="modal-close-sbn" onclick="closeModal('applyModal')">&times;</span>
+            <h2 class="modal-title-sbn">APPLY FOR <span class="title-accent">SBN</span></h2>
+            <div class="input-group-sbn">
+                <label>CALLSIGN</label>
+                <input type="text" id="appCallsign" placeholder="SBN_GHOST">
+            </div>
+            <div class="input-group-sbn">
+                <label>SPECIALIZATION</label>
+                <select id="appSpec">
+                    <option value="Assault (CQB)">Assault (CQB)</option>
+                    <option value="Paramedic">Medic / Paramedic</option>
+                    <option value="Sniper">Sniper / Marksman</option>
+                </select>
+            </div>
+            <div class="input-group-sbn">
+                <label>CONTACT_DATA</label>
+                <input type="text" id="appContact" placeholder="@telegram">
+            </div>
+            <button class="btn btn-red" style="width: 100%; height: 50px;" onclick="submitApp()">SUBMIT DOSSIER</button>
+        </div>
+    </div>
+
+    <div id="msgModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top">
+            <span class="modal-close-sbn" onclick="closeModal('msgModal')">&times;</span>
+            <h2 class="modal-title-sbn">SECURE COMMS TO <span class="title-accent">HQ</span></h2>
+            <div class="input-group-sbn">
+                <label>YOUR CALLSIGN</label>
+                <input type="text" id="msgSender" placeholder="Anon / Callsign">
+            </div>
+            <div class="input-group-sbn">
+                <label>ENCRYPTED MESSAGE</label>
+                <textarea id="msgBody" placeholder="Report intel..."></textarea>
+            </div>
+            <button class="btn btn-outline-red" style="width: 100%; height: 50px;" onclick="sendMsgHQ()">TRANSMIT</button>
+        </div>
+    </div>
+
+    <div id="squadModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top">
+            <span class="modal-close-sbn" onclick="closeSquadModal()">&times;</span>
+            <h2 class="modal-title-sbn">DEPLOY UNIT</h2>
+            <div class="sbn-quote-log" id="squadCoordDisplay">SECTOR: A-1</div>
+            <div class="input-group-sbn">
+                <label>SQUAD CALLSIGN</label>
+                <input type="text" id="sqName" placeholder="REDLINE">
+            </div>
+            <div class="input-group-sbn">
+                <label>ASSIGN PERSONNEL</label>
+                <select id="sqOps" multiple style="height: 100px; padding: 10px;"></select>
+            </div>
+            <button class="btn btn-red" style="width: 100%; height: 50px;" onclick="deploySquad()">DEPLOY</button>
+        </div>
+    </div>
+
+    <div id="editOpModal" class="modal-overlay-sbn">
+        <div class="modal-content-sbn anim-slide-top">
+            <span class="modal-close-sbn" onclick="closeModal('editOpModal')">&times;</span>
+            <h2 class="modal-title-sbn">EDIT <span class="title-accent">OPERATIVE</span></h2>
+            <input type="hidden" id="editOpId">
+            <div class="input-group-sbn">
+                <label>NEW RANK</label>
+                <select id="editOpRank">
+                    <option value="COMMANDER">COMMANDER</option>
+                    <option value="DEPUTY COMMANDER">DEPUTY COMMANDER</option>
+                    <option value="Sergeant">Sergeant</option>
+                    <option value="Specialist">Specialist</option>
+                    <option value="Medic">Medic</option>
+                    <option value="OPERATIVE">OPERATIVE</option>
+                </select>
+            </div>
+            <div class="input-group-sbn">
+                <label>NEW SPECIALIZATION</label>
+                <input type="text" id="editOpSpec">
+            </div>
+            <button class="btn btn-red" style="width: 100%; height: 50px;" onclick="saveOpEdit()">SAVE CHANGES</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-logo"><svg viewBox="0 0 100 100"><path d="M50 0L90 20V80L50 100L10 80V20L50 0Z"/></svg> <span>SBN PEOPLE'S SECURITY</span></div>
+        <div class="socials"><a href="#">TG</a><a href="#">YT</a><a href="#">X</a></div>
+        <div>© 2026 SBN USA UNIT TERMINAL.</div>
+    </footer>
+
+    <script>
+        // CUSTOM ALERTS
+        let confirmCallback = null;
+        function sbnAlert(msg) {
+            document.getElementById('alertMessageText').innerText = msg;
+            openModal('customAlertModal');
+        }
+        function closeCustomAlert() { closeModal('customAlertModal'); }
+
+        function sbnConfirm(msg, onConfirm) {
+            document.getElementById('confirmMessageText').innerText = msg;
+            confirmCallback = onConfirm;
+            openModal('customConfirmModal');
+        }
+        function closeCustomConfirm(result) {
+            closeModal('customConfirmModal');
+            if(result && confirmCallback) confirmCallback();
+        }
+
+        // DATABASE INIT
+        const SBN_DATABASE = {
+            budget: 2500000,
+            personnel: [
+                { id: "26526", name: "Arseniy Zaporizhzhia", rank: "COMMANDER", spec: "SBN Unit Leader", pass: "20100901" },
+                { id: "01", name: "Artem Zaporizhzhia", rank: "DEPUTY COMMANDER", spec: "Operations Lead", pass: "20101106" },
+                { id: "3312", name: "John 'Ghost'", rank: "Sergeant", spec: "Assault (CQB)", pass: "0000" },
+                { id: "1191", name: "Mark 'Medic'", rank: "Medic", spec: "Field Trauma Med", pass: "0000" }
+            ],
+            squads: [{ name: "SBN-01-ALPHA", ops: ["26526", "01"], sector: "C-4" }],
+            applications: [{ id: 101, callsign: "Reaper-7", spec: "Sniper", contact: "@reaper" }],
+            messages: [],
+            chats: [
+                { id: 'global', name: 'GLOBAL COMMS', messages: [{ sender: 'SYSTEM', time: '00:00:00', text: 'Secure P2P Network Initialized.' }] }
+            ],
+            news_db: [
+                { 
+                    id: 1, 
+                    tag: "OP_RED_ECLIPSE", 
+                    title: "Fall of the DPRK Dictator", 
+                    TIMESTAMP: "MARCH 20, 2026", 
+                    IMAGE: "https://images.unsplash.com/photo-1547483238-2c6036746536?q=80&w=2070", 
+                    summary: "By direct executive order of U.S. President Donald Trump, SBN executed a decapitation strike on the North Korean regime.", 
+                    full: "<h4>AFTER ACTION REPORT // CLASSIFIED</h4><p><strong>AUTHORIZATION:</strong> POTUS Donald Trump.<br><strong>OBJECTIVE:</strong> Elimination of the DPRK supreme leadership.</p><p>At 0200 local time, SBN Tier-1 operatives initiated an HAHO (High Altitude High Opening) drop directly into Pyongyang's heavily fortified Sector 1. Prior to insertion, cyber-warfare divisions deployed a localized EMP, crippling the capital's air defense grids and severing communications between the supreme command and the military.</p><p>Alpha Squad infiltrated the dictator's underground bunker complex via a compromised ventilation shaft. Heavy resistance was encountered from the Royal Guard detail, which was systematically eliminated using suppressed CQB tactics and thermal optics. The primary target was located in the central command room. Target was neutralized without hesitation.</p><p>Extraction was conducted via heavily modified stealth Black Hawks from the rooftop of the Ryugyong Hotel. No SBN casualties. The regime has collapsed. Mission accomplished.</p>" 
+                },
+                { 
+                    id: 2, 
+                    tag: "OP_STEEL_RAIN", 
+                    title: "Neutralization of ZSU 'Dictator' Defense Minister", 
+                    TIMESTAMP: "MARCH 15, 2026", 
+                    IMAGE: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?q=80&w=2070", 
+                    summary: "Precision elimination of corrupt Minister of Defense Andriy Benov's heavily armed guard detail.", 
+                    full: "<h4>AFTER ACTION REPORT // SURVEILLANCE LOGS</h4><p><strong>TARGET:</strong> Andriy Benov (Corrupt Defense Minister / 'Dictator of ZSU') and his personal security detail.<br><strong>SITUATION:</strong> Benov had been utilizing a private army paid by stolen budget funds to enforce tyrannical mandates upon civilians.</p><p><strong>EXECUTION:</strong> Operation STEEL RAIN began with a 48-hour continuous drone surveillance protocol (RQ-4 Global Hawk feed). Drone operators mapped the patrol routes of his 20-man security detail stationed around his fortified estate. At exactly 0430 hours, SBN Sniper elements (Echo Team) synchronized a 5-man simultaneous shot from 1,200 meters, instantly eliminating the perimeter guards.</p><p>As the internal alarm sounded, SBN Assault Teams breached the main gates utilizing specialized explosive charges. The interior guards, heavily armed with illegal NATO weaponry, attempted to form a chokepoint in the main hall. SBN operatives deployed flashbangs and tear gas, clearing the hall within 45 seconds using precision automated fire. Benov's guards were completely wiped out. The corrupt structure has been dismantled.</p>" 
+                },
+                { 
+                    id: 3, 
+                    tag: "OP_LEVIATHAN", 
+                    title: "Breach of the Offshore Black Site", 
+                    TIMESTAMP: "FEBRUARY 28, 2026", 
+                    IMAGE: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?q=80&w=2070", 
+                    summary: "Raid on an illegal offshore PMC black site used for human trafficking and weapon smuggling.", 
+                    full: "<h4>AFTER ACTION REPORT // TACTICAL INSERTION</h4><p>Intelligence confirmed the existence of an illegal offshore oil rig converted into a Black Site by rogue PMC forces. The site was utilized to store illegal biometrics and smuggle heavy weaponry.</p><p>SBN Amphibious teams approached the rig using underwater propulsion vehicles (DPVs) to avoid sonar detection. Climbing the rig's struts in pitch black, they planted C4 on the primary generator arrays. Upon detonation, the rig lost all power, and SBN operatives switched to Night Vision Goggles (NVGs).</p><p>The rogue PMC operators were heavily disoriented. SBN units cleared the facility deck by deck in a textbook vertical envelopment. The central server containing the illegal biometric data was secured and successfully transmitted to HQ before the rig was rigged with scuttling charges. SBN units extracted via Zodiac boats. The facility is now at the bottom of the ocean.</p>" 
+                }
+            ]
+        };
+
+        let currentActiveUser = null;
+        let selectedSBN_coord = null;
+        let currentReviewAppIndex = -1;
+        
+        let localBudget = JSON.parse(localStorage.getItem('sbn_budget')) || SBN_DATABASE.budget;
+        let localStaff = JSON.parse(localStorage.getItem('sbn_staff_db')) || SBN_DATABASE.personnel;
+        let localApps = JSON.parse(localStorage.getItem('sbn_apps_db')) || SBN_DATABASE.applications;
+        let localSquads = JSON.parse(localStorage.getItem('sbn_sq_db')) || SBN_DATABASE.squads;
+        let localMsgs = JSON.parse(localStorage.getItem('sbn_msg_db')) || SBN_DATABASE.messages;
+        let localChats = JSON.parse(localStorage.getItem('sbn_chats_db')) || SBN_DATABASE.chats;
+        
+        let activeChatId = 'global';
+
+        function saveDB() {
+            localStorage.setItem('sbn_budget', JSON.stringify(localBudget));
+            localStorage.setItem('sbn_staff_db', JSON.stringify(localStaff));
+            localStorage.setItem('sbn_apps_db', JSON.stringify(localApps));
+            localStorage.setItem('sbn_sq_db', JSON.stringify(localSquads));
+            localStorage.setItem('sbn_msg_db', JSON.stringify(localMsgs));
+            localStorage.setItem('sbn_chats_db', JSON.stringify(localChats));
+        }
+
+        window.onload = () => {
+            renderNewsFeed();
+            setInterval(() => {
+                const el = document.getElementById('currentTime');
+                if(el) el.innerText = new Date().toLocaleTimeString();
+            }, 1000);
+        };
+
+        function navPage(sectionId) {
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('nav-active'));
+            event.target.classList.add('nav-active');
+            window.scrollTo(0, 0);
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function renderNewsFeed() {
+            const feed = document.getElementById('main-news-feed');
+            feed.innerHTML = '';
+            SBN_DATABASE.news_db.forEach(n => {
+                feed.innerHTML += `
+                    <div class="news-card" onclick="openNewsDetail(${n.id})">
+                        <img src="${n.IMAGE}">
+                        <div class="news-body">
+                            <span class="news-date">#${n.tag} // ${n.TIMESTAMP}</span>
+                            <h3>${n.title}</h3><p>${n.summary}</p>
+                        </div>
+                    </div>`;
+            });
+        }
+        function openNewsDetail(id) {
+            const n = SBN_DATABASE.news_db.find(x => x.id === id);
+            document.getElementById('modal-news-tag').innerText = n.tag;
+            document.getElementById('modal-news-timestamp').innerText = n.TIMESTAMP;
+            document.getElementById('modal-news-title').innerText = n.title;
+            document.getElementById('modal-news-body').innerHTML = n.full;
+            openModal('newsDetailModal');
+        }
+
+        function submitApp() {
+            const callsign = document.getElementById('appCallsign').value;
+            if(!callsign) return sbnAlert("ENTER CALLSIGN TO PROCEED");
+            localApps.push({ id: Date.now(), callsign, spec: document.getElementById('appSpec').value, contact: document.getElementById('appContact').value });
+            saveDB();
+            sbnAlert("DOSSIER SUBMITTED. COMMAND WILL REVIEW SHORTLY.");
+            closeModal('applyModal');
+        }
+
+        function sendMsgHQ() {
+            const text = document.getElementById('msgBody').value;
+            if(!text) return sbnAlert("ENTER MESSAGE TEXT");
+            const sender = document.getElementById('msgSender').value || "ANON";
+            localMsgs.push({ sender, text, time: new Date().toLocaleTimeString() });
+            saveDB();
+            sbnAlert("TRANSMITTED SECURELY TO HQ");
+            closeModal('msgModal');
+            document.getElementById('msgBody').value = '';
+        }
+
+        function attemptLogin() {
+            const id = document.getElementById('loginId').value;
+            const pass = document.getElementById('loginPass').value;
+            const user = localStaff.find(u => u.id === id && u.pass === pass);
+            if(user) {
+                currentActiveUser = user;
+                closeModal('loginModal');
+                document.getElementById('home-view').style.display = 'none';
+                document.getElementById('main-header').style.display = 'none';
+                document.getElementById('cabinet').style.display = 'block';
+                document.getElementById('cabOpName').innerText = user.name;
+                document.getElementById('cabOpRank').innerText = `${user.rank} | ID: ${user.id}`;
+                initCab();
+            } else { sbnAlert("ACCESS DENIED. TOKEN INVALID."); }
+        }
+
+        function initCab() {
+            renderPersonnelTable();
+            renderTacticalMap();
+            renderSquadsList();
+            renderAppsList();
+            renderChatChannels();
+            
+            if (currentActiveUser.rank === "COMMANDER") {
+                document.getElementById('box-messages').style.display = 'block';
+                document.getElementById('budget-section').style.display = 'block';
+                renderMessages();
+                renderBudgetUI();
+            }
+            if (currentActiveUser.rank !== "COMMANDER" && currentActiveUser.rank !== "DEPUTY COMMANDER") {
+                document.getElementById('box-contracts').style.display = 'none';
+            }
+            addLog(`User ${currentActiveUser.name} authorized to network.`);
+            
+            // Allow enter key in chat
+            document.getElementById("chatInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        }
+
+        // --- CHAT SYSTEM LOGIC ---
+        function renderChatChannels() {
+            const list = document.getElementById('chat-channels-list');
+            list.innerHTML = '';
+            localChats.forEach(chat => {
+                const isActive = chat.id === activeChatId ? 'active' : '';
+                list.innerHTML += `<div class="chat-channel-item ${isActive}" onclick="switchChat('${chat.id}')"># ${chat.name}</div>`;
+            });
+            renderChatMessages();
+        }
+
+        function switchChat(chatId) {
+            activeChatId = chatId;
+            renderChatChannels();
+        }
+
+        function promptCreateChat() {
+            openModal('createChatModal');
+        }
+
+        function submitCreateChat() {
+            const chatName = document.getElementById('newChatNameInput').value.trim().toUpperCase();
+            if(!chatName) return sbnAlert("ENTER CHANNEL NAME");
+            
+            const newId = 'chat_' + Date.now();
+            localChats.push({
+                id: newId,
+                name: chatName.replace(/\s+/g, '_'),
+                messages: [{ sender: 'SYSTEM', time: new Date().toLocaleTimeString(), text: `Channel ${chatName} created by ${currentActiveUser.name}.` }]
+            });
+            saveDB();
+            activeChatId = newId;
+            closeModal('createChatModal');
+            document.getElementById('newChatNameInput').value = '';
+            renderChatChannels();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            const chat = localChats.find(c => c.id === activeChatId);
+            if(chat) {
+                chat.messages.push({
+                    sender: currentActiveUser.name,
+                    time: new Date().toLocaleTimeString(),
+                    text: text
+                });
+                saveDB();
+                input.value = '';
+                renderChatMessages();
+            }
+        }
+
+        function renderChatMessages() {
+            const area = document.getElementById('chat-messages-area');
+            area.innerHTML = '';
+            const chat = localChats.find(c => c.id === activeChatId);
+            if(!chat) return;
+            
+            chat.messages.forEach(msg => {
+                const isSelf = msg.sender === currentActiveUser.name;
+                area.innerHTML += `
+                    <div class="chat-msg ${isSelf ? 'self' : ''}">
+                        <span class="sender">${msg.sender}</span>
+                        ${msg.text}
+                        <span class="time">${msg.time}</span>
+                    </div>
+                `;
+            });
+            area.scrollTop = area.scrollHeight; // Auto-scroll to bottom
+        }
+        // ------------------------
+
+        // BUDGET MANAGEMENT LOGIC
+        function renderBudgetUI() {
+            document.getElementById('budgetDisplay').innerText = `$${localBudget.toLocaleString()}`;
+            const sel = document.getElementById('salaryOpSelect');
+            sel.innerHTML = '<option value="">-- SELECT OPERATIVE --</option>';
+            localStaff.forEach(p => {
+                sel.innerHTML += `<option value="${p.id}">${p.name} (${p.rank})</option>`;
+            });
+        }
+
+        function addFunds() {
+            const amtStr = document.getElementById('addFundsInput').value;
+            const amount = parseInt(amtStr);
+            if(isNaN(amount) || amount <= 0) return sbnAlert("INVALID DEPOSIT AMOUNT.");
+            
+            sbnConfirm(`DEPOSIT $${amount.toLocaleString()} TO SBN BUDGET?`, () => {
+                localBudget += amount;
+                saveDB();
+                renderBudgetUI();
+                addLog(`Commander deposited $${amount.toLocaleString()} into operations budget.`);
+                document.getElementById('addFundsInput').value = '';
+            });
+        }
+
+        function issueSalary() {
+            const targetId = document.getElementById('salaryOpSelect').value;
+            const amtStr = document.getElementById('salaryAmountInput').value;
+            const amount = parseInt(amtStr);
+            
+            if(!targetId) return sbnAlert("NO OPERATIVE SELECTED FOR TRANSFER.");
+            if(isNaN(amount) || amount <= 0) return sbnAlert("INVALID TRANSFER AMOUNT.");
+            if(amount > localBudget) return sbnAlert("INSUFFICIENT OPERATIONAL FUNDS IN BUDGET.");
+            
+            const op = localStaff.find(u => u.id === targetId);
+            sbnConfirm(`TRANSFER $${amount.toLocaleString()} AS SALARY TO ${op.name}?`, () => {
+                localBudget -= amount;
+                saveDB();
+                renderBudgetUI();
+                addLog(`Issued $${amount.toLocaleString()} salary to ${op.name}.`);
+                document.getElementById('salaryAmountInput').value = '';
+                sbnAlert("FUNDS SECURELY TRANSFERRED.");
+            });
+        }
+
+        function renderPersonnelTable() {
+            const tbody = document.getElementById('personnelTableBody');
+            tbody.innerHTML = '';
+            localStaff.forEach(p => {
+                let canTerm = false, canEdit = false;
+                if (currentActiveUser.rank === "COMMANDER") {
+                    canEdit = true;
+                    if(p.id !== currentActiveUser.id) canTerm = true;
+                } else if (currentActiveUser.rank === "DEPUTY COMMANDER") {
+                    if (p.rank !== "COMMANDER" && p.rank !== "DEPUTY COMMANDER") canTerm = true;
+                }
+
+                let btns = '';
+                if(canEdit) btns += `<button class="edit-btn" onclick="openEditOp('${p.id}')">EDIT</button> `;
+                if(canTerm) btns += `<button class="term-btn" onclick="termOp('${p.id}')">TERMINATE</button>`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.rank}</td>
+                        <td><span class="spec-badge">${p.spec}</span></td>
+                        <td><div class="action-btns">${btns || '---'}</div></td>
+                    </tr>`;
+            });
+        }
+
+        function termOp(targetId) {
+            sbnConfirm("TERMINATE OPERATIVE FROM DATABASE?", () => {
+                const idx = localStaff.findIndex(u => u.id === targetId);
+                addLog(`Operative ${localStaff[idx].name} TERMINATED.`);
+                localStaff.splice(idx, 1);
+                saveDB();
+                renderPersonnelTable();
+                if(currentActiveUser.rank === "COMMANDER") renderBudgetUI();
+            });
+        }
+
+        function openEditOp(targetId) {
+            const p = localStaff.find(u => u.id === targetId);
+            document.getElementById('editOpId').value = p.id;
+            document.getElementById('editOpRank').value = p.rank;
+            document.getElementById('editOpSpec').value = p.spec;
+            openModal('editOpModal');
+        }
+
+        function saveOpEdit() {
+            const tid = document.getElementById('editOpId').value;
+            const p = localStaff.find(u => u.id === tid);
+            p.rank = document.getElementById('editOpRank').value;
+            p.spec = document.getElementById('editOpSpec').value;
+            addLog(`Data updated for ${p.name}`);
+            saveDB();
+            closeModal('editOpModal');
+            renderPersonnelTable();
+            if(currentActiveUser.rank === "COMMANDER") renderBudgetUI();
+        }
+
+        // CONTRACT REVIEW FLOW
+        function renderAppsList() {
+            const list = document.getElementById('cab-contracts-list');
+            list.innerHTML = '';
+            localApps.forEach((a, i) => {
+                list.innerHTML += `
+                    <div class="cab-contract-item">
+                        <div class="squad-info"><h4>${a.callsign}</h4><p>${a.spec}</p></div>
+                        <button class="term-btn" style="border-color:#ccc; color:#ccc;" onclick="openReview(${i})">REVIEW</button>
+                    </div>`;
+            });
+        }
+
+        function openReview(index) {
+            currentReviewAppIndex = index;
+            const app = localApps[index];
+            document.getElementById('reviewAppCallsign').innerText = app.callsign;
+            document.getElementById('reviewAppSpec').innerText = app.spec;
+            document.getElementById('reviewAppContact').innerText = app.contact || "NO DATA";
+            openModal('contractReviewModal');
+        }
+
+        function rejectContract() {
+            sbnConfirm("PERMANENTLY REJECT THIS DOSSIER?", () => {
+                const app = localApps.splice(currentReviewAppIndex, 1)[0];
+                saveDB();
+                addLog(`Dossier for ${app.callsign} has been REJECTED.`);
+                renderAppsList();
+                closeModal('contractReviewModal');
+            });
+        }
+
+        function acceptContract() {
+            sbnConfirm("APPROVE THIS OPERATIVE FOR DUTY?", () => {
+                const app = localApps.splice(currentReviewAppIndex, 1)[0];
+                
+                // Generate secure credentials
+                const newId = Math.floor(1000 + Math.random() * 9000).toString();
+                const newPass = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                // Add to staff
+                localStaff.push({ 
+                    id: newId, 
+                    name: app.callsign, 
+                    rank: "OPERATIVE", 
+                    spec: app.spec, 
+                    pass: newPass 
+                });
+                
+                saveDB();
+                addLog(`Approved ${app.callsign}. Assigned Security ID: ${newId}.`);
+                
+                renderAppsList(); 
+                renderPersonnelTable();
+                if(currentActiveUser.rank === "COMMANDER") renderBudgetUI();
+                
+                closeModal('contractReviewModal');
+                
+                // Present generated credentials to Commander
+                document.getElementById('genOpId').innerText = newId;
+                document.getElementById('genOpPass').innerText = newPass;
+                openModal('credentialsModal');
+            });
+        }
+
+        function renderMessages() {
+            const list = document.getElementById('hq-messages-list');
+            list.innerHTML = '';
+            localMsgs.forEach((m, i) => {
+                list.innerHTML += `<div class="msg-card"><div><p style="font-size:9px; color:var(--primary); font-family:var(--font-mono)">${m.time} // ${m.sender}</p><p style="font-size:12px; margin-top:5px;">${m.text}</p></div><button class="disband-btn" onclick="delMsg(${i})">DEL</button></div>`;
+            });
+        }
+        function delMsg(i) { sbnConfirm("DELETE SECURE MESSAGE?", () => { localMsgs.splice(i, 1); saveDB(); renderMessages(); }); }
+
+        function renderTacticalMap() {
+            const map = document.getElementById('ops-map');
+            map.innerHTML = '';
+            const letters = "ABCDEFGHIJ";
+            for(let i=0; i<100; i++) {
+                const coord = letters[Math.floor(i/10)] + (i%10 + 1);
+                const isOcc = localSquads.some(s => s.sector === coord);
+                map.innerHTML += `<div class="map-sector ${isOcc ? 'active-unit' : ''}" onclick="openDeploy('${coord}')">${coord}</div>`;
+            }
+        }
+
+        function openDeploy(coord) {
+            if(localSquads.some(s => s.sector === coord)) return sbnAlert("SECTOR ALREADY OCCUPIED");
+            selectedSBN_coord = coord;
+            document.getElementById('squadCoordDisplay').innerText = `SECTOR: ${coord}`;
+            const sel = document.getElementById('sqOps');
+            sel.innerHTML = '';
+            localStaff.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.name} (${p.spec})</option>`; });
+            openModal('squadModal');
+        }
+        function closeSquadModal() { closeModal('squadModal'); }
+
+        function deploySquad() {
+            const name = document.getElementById('sqName').value;
+            if(!name) return sbnAlert("ENTER SQUAD CALLSIGN TO DEPLOY");
+            const selOptions = document.getElementById('sqOps').selectedOptions;
+            const ops = Array.from(selOptions).map(opt => opt.value);
+            localSquads.push({ name: name.toUpperCase(), sector: selectedSBN_coord, ops });
+            saveDB();
+            addLog(`Unit ${name.toUpperCase()} deployed to sector ${selectedSBN_coord}.`);
+            renderTacticalMap(); renderSquadsList(); closeSquadModal();
+        }
+
+        function renderSquadsList() {
+            const list = document.getElementById('squads-list');
+            list.innerHTML = '';
+            localSquads.forEach((sq, i) => {
+                const isHQ = sq.name === "SBN-01-ALPHA" && currentActiveUser.rank !== "COMMANDER";
+                let opsStr = sq.ops ? sq.ops.map(id => { let p = localStaff.find(u=>u.id===id); return p ? p.name : id; }).join(', ') : '';
+                list.innerHTML += `<div class="squad-card"><div class="squad-info"><h4>${sq.name}</h4><p>LOC: ${sq.sector} <br> OPS: ${opsStr || 'NONE'}</p></div>${!isHQ ? `<button class="disband-btn" onclick="disbandSq(${i})">DISBAND</button>` : '<span>HQ</span>'}</div>`;
+            });
+        }
+        function disbandSq(i) {
+            sbnConfirm("DISBAND SQUAD FROM SECTOR?", () => {
+                addLog(`Squad ${localSquads[i].name} disbanded and extracted.`);
+                localSquads.splice(i, 1); saveDB();
+                renderTacticalMap(); renderSquadsList();
+            });
+        }
+
+        function addLog(msg) {
+            const ul = document.getElementById('terminalCabLogs');
+            ul.innerHTML += `<li><span class="t-stamp">[${new Date().toLocaleTimeString()}]</span> ${msg}</li>`;
+            ul.scrollTop = ul.scrollHeight;
+        }
+    </script>
+</body>
+</html>
